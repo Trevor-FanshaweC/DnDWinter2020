@@ -5,9 +5,24 @@
 	// put variables (connections to the web page / DOM) at the top
 	// constant -> something that will never change / can't be redefined
 	const puzzleSelectors = document.querySelectorAll("#buttonHolder img"),
-				dropZoneContainer = document.querySelector(".puzzle-board");
+				dropZoneContainer = document.querySelector(".puzzle-board"),
+				dragImages = document.querySelectorAll(".puzzle-image"),
+				dropZones = document.querySelectorAll(".drop-zone");
 
 	// functions go in the middle
+	function dragStart() {
+		console.log('started draggin');
+	}
+
+	function draggedOver(event) {
+		event.preventDefault();
+		console.log('dragged over me');
+	}
+
+	function dropped(event) {
+		event.preventDefault();
+		console.log('dropped somethin on me');
+	}
 
 	// this function runs when the bottom nav buttons are clicked
 	// it changes the bg image of the drop zone div using the style property
@@ -26,6 +41,12 @@
 
 	// event handling at the bottom
 	puzzleSelectors.forEach(button => button.addEventListener("click", changeBGImage));
+	dragImages.forEach(piece => piece.addEventListener("dragstart", dragStart));
+	
+	dropZones.forEach(zone => {
+		zone.addEventListener("dragover", draggedOver);
+		zone.addEventListener("drop", dropped);
+	})
 
 	// emulate a click on the first bottom button and run the bg image function
 	changeBGImage.call(puzzleSelectors[0]);
