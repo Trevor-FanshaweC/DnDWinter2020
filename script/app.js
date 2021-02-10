@@ -1,6 +1,3 @@
-// module pattern
-// iife
-
 (() => {
 	// put variables (connections to the web page / DOM) at the top
 	// constant -> something that will never change / can't be redefined
@@ -10,18 +7,27 @@
 				dropZones = document.querySelectorAll(".drop-zone");
 
 	// functions go in the middle
-	function dragStart() {
+	function dragStart(event) {
 		console.log('started draggin');
+		// take the dragged image and move it into the drop zone
+		// move it from the left container to the drop zone (reparent it)
+		event.dataTransfer.setData("savedID", this.id);
 	}
 
 	function draggedOver(event) {
 		event.preventDefault();
 		console.log('dragged over me');
+		// allow an element to be dragged over and then dropped
 	}
 
 	function dropped(event) {
+		// override the browser / element's default behaviour, and do what i say!!
 		event.preventDefault();
-		console.log('dropped somethin on me');
+		let targetID = event.dataTransfer.getData("savedID");
+		console.log("i dragged this image:", targetID);
+		// put the dragged image into this container
+		// create a new img tag, set it source, and THEN append it
+		event.target.appendChild(document.querySelector(`#${targetID}`));
 	}
 
 	// this function runs when the bottom nav buttons are clicked
@@ -29,20 +35,15 @@
 	function changeBGImage() {
 		// get the custom data attribute from the clicked button
 		let currentImage = this.dataset.imageref;
-
 		// `` is NOT a quote. it's a JavaScript template string
 		dropZoneContainer.style.backgroundImage = `url(images/backGround${currentImage}.jpg)`;
-
-
-		// this is an intermediate way to do the same something
-		// dropZoneContainer.style.backgroundImage = `url(images/backGround${this.dataset.imageref}.jpg)`;
-		// debugger;
 	}
 
 	// event handling at the bottom
 	puzzleSelectors.forEach(button => button.addEventListener("click", changeBGImage));
+
 	dragImages.forEach(piece => piece.addEventListener("dragstart", dragStart));
-	
+
 	dropZones.forEach(zone => {
 		zone.addEventListener("dragover", draggedOver);
 		zone.addEventListener("drop", dropped);
